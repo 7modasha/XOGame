@@ -1,14 +1,52 @@
-#include <iostream>
-#include <cstdlib>
-#include <ctime>
+#include <bits/stdc++.h>
+
 using namespace std;
 
+enum Color {
+    NONE = 0,
+    BLACK, RED, GREEN,
+    YELLOW, BLUE, MAGENTA,
+    CYAN, WHITE
+};
 
+string set_color(Color foreground = NONE, Color background = NONE) {
+    string num_s;
+    string s = "\033[";
+
+    if (!foreground && ! background) s += "0"; // reset colors if no params
+
+    if (foreground) {
+        num_s = to_string(29 + foreground);
+        s += num_s;
+
+        if (background) s += ";";
+    }
+
+    if (background) {
+        num_s = to_string(29 + foreground);
+        s += num_s;
+    }
+
+    return s + "m";
+}
+
+
+
+//\e[1m
 void show(const char xo[][3]){
 
 	for (int row = 0; row < 3; row++){
 		for (int col = 0; col < 3; col++){
-			cout << "   " << xo[row][col] << " || ";
+
+			cout << "   ";
+			if(xo[row][col] == 'X')
+				cout << set_color(CYAN, NONE) + "\e[1m" << 'X';
+			else if(xo[row][col] == 'O')
+				cout << set_color(GREEN, NONE) + "\e[1m" << 'O';
+			else
+				cout << xo[row][col];
+
+			cout << set_color(NONE, NONE) << " || ";
 		}
 		cout << "\n=========================\n";
 	}
@@ -56,7 +94,7 @@ void input(char xo[][3], int numOfSquare, bool isX, bool &isWrong){
 bool isHeWon(char xo[][3]){
 
 	//ver
-	     if (xo[0][0] == xo[1][0] && xo[0][0] == xo[2][0]) return true;
+	if (xo[0][0] == xo[1][0] && xo[0][0] == xo[2][0]) return true;
 
 	else if (xo[0][1] == xo[1][1] && xo[0][1] == xo[2][1]) return true;
 
@@ -86,7 +124,7 @@ void pronTheWinner(bool isX){
 
 }
 
-void main() {
+int main() {
 
 	char xo[3][3], anotherGames;
 	int numOfSquare, c = 0;
@@ -101,7 +139,7 @@ void main() {
 
 			do{
 
-				cout << "Player X, enter the number of the square: "; cin >> numOfSquare; isX = true; input(xo, numOfSquare, isX, isWrong); system("CLS"); show(xo);
+				cout << "Player X, enter the number of the square: "; cin >> numOfSquare; isX = true; input(xo, numOfSquare, isX, isWrong); system("clear"); show(xo);
 
 				if (isHeWon(xo)){ pronTheWinner(isX); noWinner = false; }
 
@@ -116,7 +154,7 @@ void main() {
 
 			do{
 
-				cout << "Player O, enter the number of the square: "; cin >> numOfSquare; isX = false; input(xo, numOfSquare, isX, isWrong); system("CLS"); show(xo);
+				cout << "Player O, enter the number of the square: "; cin >> numOfSquare; isX = false; input(xo, numOfSquare, isX, isWrong); system("clear"); show(xo);
 
 				if (isHeWon(xo)){ pronTheWinner(isX); noWinner = false; }
 
@@ -129,13 +167,15 @@ void main() {
 			c++;
 			if (c == 9) { cout << "No winner sorry\n"; break; }
 
-			system("CLS");
+			system("clear");
 			show(xo);
 		}
 
-		cout << "Another game? (y/n): "; cin >> anotherGames; system("CLS"); reFill(xo); show(xo); noWinner = true; c = 0;
+		cout << "Another game? (y/n): "; cin >> anotherGames; system("clear"); reFill(xo); show(xo); noWinner = true; c = 0;
 
 	} while (anotherGames != 'n');
 
-	system("pause");
+	return 0;
+
+	//system("pause");
 }
